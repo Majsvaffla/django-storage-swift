@@ -7,11 +7,11 @@ from functools import wraps
 from io import BytesIO, UnsupportedOperation
 from time import time
 
-import magic
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files import File
 from django.core.files.storage import Storage
+import filetype
 from six.moves.urllib import parse as urlparse
 
 try:
@@ -267,7 +267,7 @@ class SwiftStorage(Storage):
             pass
 
         if self.content_type_from_fd:
-            content_type = magic.from_buffer(content.read(1024), mime=True)
+            content_type = filetype.guess(content.read(1024)).mime
             # Go back to the beginning of the file
             content.seek(0)
         else:
